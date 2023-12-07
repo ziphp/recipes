@@ -54,5 +54,11 @@
         "branch-alias": {
             "dev-main": "6.0.x-dev"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ]
 }
