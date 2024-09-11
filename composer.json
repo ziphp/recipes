@@ -25,6 +25,8 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "charescape/php-functions": ">=1.1.0",
+        "lcobucci/clock": "^3.0",
+        "lcobucci/jwt": "^5.0",
         "symfony/string": ">=6.0.0",
         "ziphp/ziphp": ">=5.0.0"
     },
@@ -44,7 +46,7 @@
         }
     },
     "scripts": {
-        "redo-install": [
+        "iii": [
             "rm -f composer.lock",
             "@composer self-update -vvv",
             "@composer install -vvv"
