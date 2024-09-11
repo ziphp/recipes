@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Ziphp\Recipes;
 
+use Symfony\Component\HttpClient\CurlHttpClient;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpClient\Response\CurlResponse;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -51,7 +53,7 @@ final class SymfonyHttpClient
         $this->_x_www_form_urlencoded = true;
     }
 
-    public function toArrayGET(string $url, array $query = [], array $options = [], bool $strict = true): ?array
+    public function toArrayGET(string $url, array $query = [], array $options = [], bool $strict = true): array|null
     {
         if (count($query)) {
             $options['query'] = $query;
@@ -60,27 +62,27 @@ final class SymfonyHttpClient
         return $this->requestInternal('GET', $url, $options, true, $strict);
     }
 
-    public function toArrayPOST(string $url, array $json = [], array $options = [], bool $strict = true): ?array
+    public function toArrayPOST(string $url, array $json = [], array $options = [], bool $strict = true): array|null
     {
         return $this->internalPOST('POST', $url, $json, $options, true, $strict);
     }
 
-    public function toArrayPUT(string $url, array $json = [], array $options = [], bool $strict = true): ?array
+    public function toArrayPUT(string $url, array $json = [], array $options = [], bool $strict = true): array|null
     {
         return $this->internalPOST('PUT', $url, $json, $options, true, $strict);
     }
 
-    public function toArrayPATCH(string $url, array $json = [], array $options = [], bool $strict = true): ?array
+    public function toArrayPATCH(string $url, array $json = [], array $options = [], bool $strict = true): array|null
     {
         return $this->internalPOST('PATCH', $url, $json, $options, true, $strict);
     }
 
-    public function toArrayDELETE(string $url, array $json = [], array $options = [], bool $strict = true): ?array
+    public function toArrayDELETE(string $url, array $json = [], array $options = [], bool $strict = true): array|null
     {
         return $this->internalPOST('DELETE', $url, $json, $options, true, $strict);
     }
 
-    public function toStringGET(string $url, array $query = [], array $options = [], bool $strict = true): ?string
+    public function toStringGET(string $url, array $query = [], array $options = [], bool $strict = true): string|null
     {
         if (count($query)) {
             $options['query'] = $query;
@@ -89,30 +91,27 @@ final class SymfonyHttpClient
         return $this->requestInternal('GET', $url, $options, false, $strict);
     }
 
-    public function toStringPOST(string $url, array $json = [], array $options = [], bool $strict = true): ?string
+    public function toStringPOST(string $url, array $json = [], array $options = [], bool $strict = true): string|null
     {
         return $this->internalPOST('POST', $url, $json, $options, false, $strict);
     }
 
-    public function toStringPUT(string $url, array $json = [], array $options = [], bool $strict = true): ?string
+    public function toStringPUT(string $url, array $json = [], array $options = [], bool $strict = true): string|null
     {
         return $this->internalPOST('PUT', $url, $json, $options, false, $strict);
     }
 
-    public function toStringPATCH(string $url, array $json = [], array $options = [], bool $strict = true): ?string
+    public function toStringPATCH(string $url, array $json = [], array $options = [], bool $strict = true): string|null
     {
         return $this->internalPOST('PATCH', $url, $json, $options, false, $strict);
     }
 
-    public function toStringDELETE(string $url, array $json = [], array $options = [], bool $strict = true): ?string
+    public function toStringDELETE(string $url, array $json = [], array $options = [], bool $strict = true): string|null
     {
         return $this->internalPOST('DELETE', $url, $json, $options, false, $strict);
     }
 
-    /**
-     * @return array|string|null
-     */
-    private function internalPOST(string $method, string $url, array $json, array $options, bool $toArray, bool $strict)
+    private function internalPOST(string $method, string $url, array $json, array $options, bool $toArray, bool $strict): array|string|null
     {
         if (count($json)) {
             if ($this->_x_www_form_urlencoded) {
@@ -125,20 +124,17 @@ final class SymfonyHttpClient
         return $this->requestInternal($method, $url, $options, $toArray, $strict);
     }
 
-    /**
-     * @return array|string|null
-     */
-    private function requestInternal(string $method, string $url, array $options, bool $toArray, bool $strict)
+    private function requestInternal(string $method, string $url, array $options, bool $toArray, bool $strict): array|string|null
     {
         // reset
         $this->_error = null;
         $this->_debug = null;
 
-        /** @var \Symfony\Component\HttpClient\CurlHttpClient $client */
+        /** @var CurlHttpClient $client */
         $client = HttpClient::create();
 
         try {
-            /** @var \Symfony\Component\HttpClient\Response\CurlResponse $_response */
+            /** @var CurlResponse $_response */
             $_response = $client->request($method, $url, array_merge($this->initOptions, $options));
         } catch (TransportExceptionInterface $e) {
             $this->_error = $e->getMessage();
