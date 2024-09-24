@@ -70,7 +70,7 @@ trait RestControllerTrait
                 'params' => Yii::$app->getRequest()->getQueryParams(),
                 'pageParam' => $pageConfig['pageParam'] ?? '_page',
                 'pageSizeParam' => $pageConfig['pageSizeParam'] ?? '_perPage',
-                'pageSizeLimit' => $pageConfig['pageSizeLimit'] ?? [1, 20],
+                'pageSizeLimit' => $pageConfig['pageSizeLimit'] ?? [1, 100],
             ],
             'sort' => [
                 'class' => Sort::class,
